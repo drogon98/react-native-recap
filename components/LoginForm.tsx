@@ -21,7 +21,6 @@ const LoginForm = (props: any) => {
   };
 
   const handleLogin = (e: GestureResponderEvent) => {
-    console.log("e", e);
     props.navigation.navigate("Dashboard");
   };
 

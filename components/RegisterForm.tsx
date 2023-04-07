@@ -30,7 +30,6 @@ const RegisterForm = (props: IRegisterForProps) => {
   };
 
   const handleRegister = (e: GestureResponderEvent) => {
-    console.log("e", e);
     props.navigation.navigate("Dashboard");
   };
 
