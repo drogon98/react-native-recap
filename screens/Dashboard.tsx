@@ -6,23 +6,30 @@ import {
   Button,
   GestureResponderEvent,
   FlatList,
+  ScrollView,
+  Pressable,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../store";
 import AddTodoModal from "../components/AddTodoModal";
+import { ITodo, updateActiveTodo } from "../store/slices/todos";
 
-const DashboardScreen = () => {
+const DashboardScreen = (props: any) => {
   const dispatch = useAppDispatch();
   const todos = useAppSelector((state) => state.todos.todos);
   const [showAddTodoModal, setShowAddTodoModal] = React.useState(false);
-
-  console.log("todos", todos);
 
   const handleAddTodoPress = (e: GestureResponderEvent) => {
     setShowAddTodoModal(true);
   };
 
+  const handleTodoPress = (e: GestureResponderEvent, todo: ITodo) => {
+    console.log("e", e);
+    dispatch(updateActiveTodo(todo));
+    props.navigation.navigate("Todo");
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.heading}>Todos</Text>
 
       <Button title="Add Todo" onPress={handleAddTodoPress} />
@@ -37,13 +44,16 @@ const DashboardScreen = () => {
       <FlatList
         data={todos}
         renderItem={({ item }) => (
-          <View style={styles.item}>
+          <Pressable
+            style={styles.item}
+            onPress={(e) => handleTodoPress(e, item)}
+          >
             <Text style={styles.title}>{item.title}</Text>
-          </View>
+          </Pressable>
         )}
         keyExtractor={(item) => item.id}
       />
-    </View>
+    </ScrollView>
   );
 };
 
