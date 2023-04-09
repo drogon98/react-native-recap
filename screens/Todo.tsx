@@ -7,26 +7,36 @@ import {
   GestureResponderEvent,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../store";
-import { removeTodo, updateActiveTodo } from "../store/slices/todos";
+import { removeTodo, setActiveTodo } from "../store/slices/todos";
+import AddEditTodoModal from "../components/AddEditTodoModal";
 
 const TodoScreen = (props: any) => {
   const todo = useAppSelector((state) => state.todos.activeTodo);
   const dispatch = useAppDispatch();
+  const [showEditTodoModal, setShowEditTodoModal] = React.useState(false);
 
   const handleDeleteTodoPress = (e: GestureResponderEvent) => {
     dispatch(removeTodo(todo?.id ?? ""));
-    dispatch(updateActiveTodo(null));
+    dispatch(setActiveTodo(null));
     props.navigation.navigate("Dashboard");
   };
+
   return (
     <View style={styles.container}>
+      {showEditTodoModal && (
+        <AddEditTodoModal
+          setShowModal={setShowEditTodoModal}
+          showModal={showEditTodoModal}
+          action="edit"
+        />
+      )}
       <Text style={styles.heading}>{todo?.title}</Text>
 
       <View style={styles.buttonsWrapper}>
         <Button
           title="Edit"
           onPress={() => {
-            //
+            setShowEditTodoModal(true);
           }}
         />
         <Button title="Delete" onPress={handleDeleteTodoPress} />

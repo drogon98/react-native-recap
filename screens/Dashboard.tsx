@@ -10,8 +10,8 @@ import {
   Pressable,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../store";
-import AddTodoModal from "../components/AddTodoModal";
-import { ITodo, updateActiveTodo } from "../store/slices/todos";
+import AddEditTodoModal from "../components/AddEditTodoModal";
+import { ITodo, setActiveTodo } from "../store/slices/todos";
 
 const DashboardScreen = (props: any) => {
   const dispatch = useAppDispatch();
@@ -23,8 +23,7 @@ const DashboardScreen = (props: any) => {
   };
 
   const handleTodoPress = (e: GestureResponderEvent, todo: ITodo) => {
-    console.log("e", e);
-    dispatch(updateActiveTodo(todo));
+    dispatch(setActiveTodo(todo));
     props.navigation.navigate("Todo");
   };
 
@@ -35,9 +34,10 @@ const DashboardScreen = (props: any) => {
       <Button title="Add Todo" onPress={handleAddTodoPress} />
 
       {showAddTodoModal && (
-        <AddTodoModal
+        <AddEditTodoModal
           setShowModal={setShowAddTodoModal}
           showModal={showAddTodoModal}
+          action="add"
         />
       )}
 
