@@ -67,12 +67,7 @@ const AddEditTodoModal = (props: IAddEditTodoModalProps) => {
             onChangeText={handleChange}
             value={title}
           />
-          {/* <TextInput
-        placeholder="Password"
-        style={styles.input}
-        onChangeText={handlePasswordChange}
-        secureTextEntry={true}
-      /> */}
+ 
 
           <View style={styles.buttonsWrapper}>
             <Button
