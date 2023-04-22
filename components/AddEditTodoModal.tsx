@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { Modal, View, Text, StyleSheet, Button, TextInput } from "react-native";
-import { ITodo, addTodo, editTodo, setActiveTodo } from "../store/slices/todos";
+import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import { _addTodo, updateTodo } from "../helpers/services/todos";
 import { useAppDispatch, useAppSelector } from "../store";
-import uuid from "react-native-uuid";
+import { addTodo, editTodo, setActiveTodo } from "../store/slices/todos";
 
 interface IAddEditTodoModalProps {
   showModal: boolean;
@@ -14,7 +14,7 @@ const AddEditTodoModal = (props: IAddEditTodoModalProps) => {
   const [title, setTitle] = React.useState("");
   const dispatch = useAppDispatch();
   const todo = useAppSelector((state) => state.todos.activeTodo);
-  const [todoId, setTodoId] = React.useState("");
+  const [todoId, setTodoId] = React.useState<number>();
 
   useEffect(() => {
     if (props.action === "edit" && todo) {
@@ -27,23 +27,37 @@ const AddEditTodoModal = (props: IAddEditTodoModalProps) => {
     setTitle(val);
   };
 
-  const handleSaveTodo = (title: string) => {
-    if (props.action === "add") {
-      dispatch(
-        addTodo({
-          title,
-          id: uuid.v4().toString(),
-        })
-      );
-    } else if (props.action === "edit") {
-      const updatedTodo = {
+  const handleSaveTodo = async (title: string) => {
+    try {
+      const payload = {
         title,
-        id: todoId,
       };
-      dispatch(setActiveTodo(updatedTodo));
-      dispatch(editTodo(updatedTodo));
+      if (props.action === "add") {
+        const response = await _addTodo(payload);
+        if (response) {
+          dispatch(addTodo(response));
+        }
+      } else if (props.action === "edit") {
+        await updateTodo(todoId!, {
+          title,
+        });
+        dispatch(
+          setActiveTodo({
+            ...payload,
+            id: todoId,
+          })
+        );
+        dispatch(
+          editTodo({
+            ...payload,
+            id: todoId,
+          })
+        );
+      }
+      props.setShowModal(false);
+    } catch (error) {
+      console.log("error", error);
     }
-    props.setShowModal(false);
   };
 
   return (
@@ -67,7 +81,6 @@ const AddEditTodoModal = (props: IAddEditTodoModalProps) => {
             onChangeText={handleChange}
             value={title}
           />
- 
 
           <View style={styles.buttonsWrapper}>
             <Button

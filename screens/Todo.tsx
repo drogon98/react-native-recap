@@ -9,16 +9,22 @@ import {
 import { useAppDispatch, useAppSelector } from "../store";
 import { removeTodo, setActiveTodo } from "../store/slices/todos";
 import AddEditTodoModal from "../components/AddEditTodoModal";
+import { deleteTodo } from "../helpers/services/todos";
 
 const TodoScreen = (props: any) => {
   const todo = useAppSelector((state) => state.todos.activeTodo);
   const dispatch = useAppDispatch();
   const [showEditTodoModal, setShowEditTodoModal] = React.useState(false);
 
-  const handleDeleteTodoPress = (e: GestureResponderEvent) => {
-    dispatch(removeTodo(todo?.id ?? ""));
-    dispatch(setActiveTodo(null));
-    props.navigation.navigate("Dashboard");
+  const handleDeleteTodoPress = async (e: GestureResponderEvent) => {
+    try {
+      await deleteTodo(todo?.id!);
+      dispatch(removeTodo(todo?.id!));
+      dispatch(setActiveTodo(null));
+      props.navigation.navigate("Dashboard");
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
