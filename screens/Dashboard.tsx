@@ -24,7 +24,6 @@ const DashboardScreen = (props: any) => {
     const getData = async () => {
       try {
         const todos = await getTodos();
-        console.log("todos", todos);
         if (todos) {
           dispatch(setTodos(todos));
           setLoading(false);
@@ -46,14 +45,13 @@ const DashboardScreen = (props: any) => {
     props.navigation.navigate("Todo");
   };
 
-  return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.heading}>Todos</Text>
-
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
+  return loading ? (
+    <Text>Loading...</Text>
+  ) : (
+    <FlatList
+      ListHeaderComponent={
         <>
+          <Text style={styles.heading}>Todos</Text>
           <Button title="Add Todo" onPress={handleAddTodoPress} />
           {showAddTodoModal && (
             <AddEditTodoModal
@@ -62,21 +60,19 @@ const DashboardScreen = (props: any) => {
               action="add"
             />
           )}
-          <FlatList
-            data={todos}
-            renderItem={({ item }) => (
-              <Pressable
-                style={styles.item}
-                onPress={(e) => handleTodoPress(e, item)}
-              >
-                <Text style={styles.title}>{item.title}</Text>
-              </Pressable>
-            )}
-            keyExtractor={(item) => `${item.id}`}
-          />
         </>
+      }
+      data={todos}
+      renderItem={({ item }) => (
+        <Pressable
+          style={styles.item}
+          onPress={(e) => handleTodoPress(e, item)}
+        >
+          <Text style={styles.title}>{item.title}</Text>
+        </Pressable>
       )}
-    </ScrollView>
+      keyExtractor={(item) => `${item.id}`}
+    />
   );
 };
 
