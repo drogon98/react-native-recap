@@ -7,7 +7,7 @@ export const getTodos = async (): Promise<ITodo[] | undefined> => {
 };
 
 export const _addTodo = async (input: ITodo): Promise<ITodo | undefined> => {
-  const response = await nativeAxios.post("posts", input);
+  const response = await nativeAxios.post("todos", input);
   return response.data;
 };
 
